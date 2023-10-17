@@ -14,17 +14,19 @@ add_action('rest_api_init', function () {
 });
 
 function convert_wav_to_mp3($request) {
-    // $response = array();
+    $response = array();
 
     // Check if a file is uploaded
-    // if (isset($_FILES['wav_file'])) {
-    //     $file = $_FILES['wav_file'];
+    if (isset($_FILES['wav_file'])) {
+        $file = $_FILES['wav_file'];
 
-    //     // Check if it's a valid .wav file
-    //     $file_info = pathinfo($file['name']);
-    //     if ($file_info['extension'] !== 'wav') {
-    //         $response['error'] = 'Invalid file format. Please upload a .wav file.';
-    //     } else {
+        // Check if it's a valid .wav file
+        $file_info = pathinfo($file['name']);
+        if ($file_info['extension'] !== 'wav') {
+            $response['error'] = 'Invalid file format. Please upload a .wav file.';
+        } else {
+            $response['success'] = 'File input successfully.';
+        }
     //         // Convert .wav to .mp3
     //         exec("ffmpeg -i " . $file['tmp_name'] . " " . $file_info['filename'] . ".mp3");
 
@@ -52,11 +54,9 @@ function convert_wav_to_mp3($request) {
 
     //         $response['success'] = 'File converted and stored successfully.';
     //     }
-    // } else {
-    //     $response['error'] = 'No file uploaded.';
-    // }
-
-    $response = "Hello";
+    } else {
+        $response['error'] = 'No file uploaded.';
+    }
 
     return new WP_REST_Response($response, 200);
 }
