@@ -8,13 +8,13 @@ Description: Receive audio .wav files and convert to .mp3 format and stores them
 // Define the API endpoint
 add_action('rest_api_init', function () {
     register_rest_route('audio/v1', '/convert', [
-        'methods' => 'GET',
+        'methods' => 'POST',
         'callback' => 'convert_wav_to_mp3'
     ]);
 });
 
 function convert_wav_to_mp3($request) {
-    $response = array();
+    // $response = array();
 
     // Check if a file is uploaded
     // if (isset($_FILES['wav_file'])) {
@@ -55,6 +55,8 @@ function convert_wav_to_mp3($request) {
     // } else {
     //     $response['error'] = 'No file uploaded.';
     // }
+
+    $response = "Hello";
 
     return new WP_REST_Response($response, 200);
 }
