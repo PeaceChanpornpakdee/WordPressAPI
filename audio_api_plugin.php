@@ -21,21 +21,24 @@ function convert_wav_to_mp3($request) {
 
         $file = $_FILES['file'];
 
-        // Check if it's a valid .png file
+        // Check if it's a valid .wav file
         $file_info = pathinfo($file['name']);
-        if ($file_info['extension'] !== 'png') {
-            $response['error'] = 'Invalid file format. Please upload a .png file.';
+        if ($file_info['extension'] !== 'wav') {
+            $response['error'] = 'Invalid file format. Please upload a .wav file.';
         } else {
+            // Convert .wav to .mp3
+            exec("ffmpeg -i " . $file['tmp_name'] . " " . $file_info['filename'] . ".mp3");
+
             // Store in WordPress media library
             $upload_dir = wp_upload_dir();
-            $file_path = $upload_dir['path'] . '/' . $file_info['basename'];
-            $file_name = $file_info['basename'];
+            $file_path = $upload_dir['path'] . '/' . $file_info['filename'] . '.mp3';
+            $file_name = $file_info['filename'] . '.mp3';
 
             move_uploaded_file($file['tmp_name'], $file_path);
 
             $attachment = array(
                 'guid'           => $upload_dir['url'] . '/' . $file_name,
-                'post_mime_type' => 'image/png',
+                'post_mime_type' => 'audio/mpeg',
                 'post_title'     => preg_replace('/\.[^.]+$/', '', $file_name),
                 'post_content'   => '',
                 'post_status'    => 'inherit'
@@ -43,49 +46,15 @@ function convert_wav_to_mp3($request) {
 
             $attach_id = wp_insert_attachment($attachment, $file_path);
 
-            // $response['upload_dir'] = $upload_dir;
-            // $response['file_info'] = $file_info;
-            // $response['attach_id'] = $attach_id;
-            // $response['file_path'] = $file_path;
-
             // $attach_data = wp_generate_attachment_metadata($attach_id, $file_path);
             // wp_update_attachment_metadata($attach_id, $attach_data);
-
-            $response['success'] = 'File uploaded and stored successfully.';
-        }
-
-        // // Check if it's a valid .wav file
-        // $file_info = pathinfo($file['name']);
-        // if ($file_info['extension'] !== 'wav') {
-        //     $response['error'] = 'Invalid file format. Please upload a .wav file.';
-        // } else {
-        //     // Convert .wav to .mp3
-        //     exec("ffmpeg -i " . $file['tmp_name'] . " " . $file_info['filename'] . ".mp3");
-
-        //     // Store in WordPress media library
-        //     $upload_dir = wp_upload_dir();
-        //     $file_path = $upload_dir['path'] . '/' . $file_info['filename'] . '.mp3';
-        //     $file_name = $file_info['filename'] . '.mp3';
-
-        //     $attachment = array(
-        //         'guid'           => $upload_dir['url'] . '/' . $file_name,
-        //         'post_mime_type' => 'audio/mpeg',
-        //         'post_title'     => preg_replace('/\.[^.]+$/', '', $file_name),
-        //         'post_content'   => '',
-        //         'post_status'    => 'inherit'
-        //     );
-
-        //     $attach_id = wp_insert_attachment($attachment, $file_path);
-
-        //     $attach_data = wp_generate_attachment_metadata($attach_id, $file_path);
-        //     wp_update_attachment_metadata($attach_id, $attach_data);
 
             // // Clean up temporary files
             // unlink($file['tmp_name']);
             // unlink($file_info['filename'] . '.mp3');
 
-            // $response['success'] = 'File converted and stored successfully.';
-        // }
+            $response['success'] = 'File converted and stored successfully.';
+        }
     } else {
         $response['error'] = 'No file uploaded.';
     }
