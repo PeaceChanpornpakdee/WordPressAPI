@@ -18,6 +18,7 @@ function convert_wav_to_mp3($request) {
 
     // Check if a file is uploaded
     if (isset($_FILES['file'])) {
+
         $file = $_FILES['file'];
 
         // Check if it's a valid .png file
@@ -41,6 +42,11 @@ function convert_wav_to_mp3($request) {
             );
 
             $attach_id = wp_insert_attachment($attachment, $file_path);
+
+            // $response['upload_dir'] = $upload_dir;
+            // $response['file_info'] = $file_info;
+            // $response['attach_id'] = $attach_id;
+            // $response['file_path'] = $file_path;
 
             // $attach_data = wp_generate_attachment_metadata($attach_id, $file_path);
             // wp_update_attachment_metadata($attach_id, $attach_data);
